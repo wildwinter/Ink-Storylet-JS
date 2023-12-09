@@ -33,6 +33,8 @@ export class Storylets {
     #available = [];
     #knotNames = [];
     #stats = {};
+    #rebuildList = [];
+    onUpdated = null;
 
     constructor(story) {
         this.#story = story;
@@ -58,10 +60,6 @@ export class Storylets {
         // Move to the entrypoint, if it exists:
         if (this.#knotNames.includes("start"))
             this.#story.ChoosePathString("start");
-
-        // Update the available storylets.
-        this.Update();
-
     }
 
     // ------------------------- Ink External Functions ------------------------
@@ -96,7 +94,9 @@ export class Storylets {
         this.#available = [];
         this.#knotNames = [];
         this.#stats = {};
+        this.#rebuildList = [];
         this.#init();
+        this.StartUpdate();
     }
 
     ListDecks() {
@@ -112,7 +112,8 @@ export class Storylets {
         this.#story.ChoosePathString(storyletName);
     }
 
-    Update() {
+    StartUpdate() {
+        this.#rebuildList = [];
         this.#available = [];
 
         for (const deckName in this.#decks) {
@@ -125,16 +126,36 @@ export class Storylets {
             const deck = this.#decks[deckName];
 
             for (const storyletName of deck.storyletNames) {
-                var storyletAvailable = this.#checkStoryletAvailable(storyletName)
-                //console.log("Storylet " + storyletName + " available:" + storyletAvailable);
-
-                if (!storyletAvailable)
-                    continue;
-
-                this.#available.push(storyletName);
+                this.#rebuildList.push(storyletName);
             }
-
         }
+        var rcv = this;
+        setTimeout(function () { rcv.#processUpdateChunk(); }, Storylets.UPDATE_RATE_MS);
+    }
+
+    static UPDATE_NUMBER = 1000;
+    static UPDATE_RATE_MS = 16;
+
+    #processUpdateChunk() {
+        var count = Math.min(Storylets.UPDATE_NUMBER, this.#rebuildList.length);
+
+        for (var i = 0; i < count; i++) {
+            var storyletName = this.#rebuildList.shift();
+
+            var storyletAvailable = this.#checkStoryletAvailable(storyletName)
+            if (!storyletAvailable)
+                continue;
+
+            this.#available.push(storyletName);
+        }
+
+        if (this.#rebuildList.length > 0) {
+            var rcv = this;
+            setTimeout(function () { rcv.#processUpdateChunk(); }, Storylets.UPDATE_RATE_MS);
+            return;
+        }
+        if (this.onUpdated != null)
+            this.onUpdated();
     }
 
     // Call the _<deckName>() function. If true, the storylets in this deck

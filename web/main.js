@@ -1,7 +1,6 @@
 import { Storylets } from "../engine/storylets.js"
 
 (function (storyContent) {
-
     //console.log("CREATE STORY");
     // Create ink story from the content using inkjs
     var story = new inkjs.Story(storyContent);
@@ -9,6 +8,10 @@ import { Storylets } from "../engine/storylets.js"
     //console.log("DO STORYLETS");
     // STORYLETS
     var storylets = new Storylets(story);
+    storylets.onUpdated = function () {
+        continueStory(true);
+    };
+    storylets.StartUpdate();
     // STORYLETS
 
     var savePoint = "";
@@ -51,7 +54,7 @@ import { Storylets } from "../engine/storylets.js"
     savePoint = story.state.toJson();
 
     // Kick off the start of the story!
-    continueStory(true);
+    //continueStory(true);
 
     // Main story processing function. Each time this is called it generates
     // all the next content up as far as the next set of choices.
@@ -199,49 +202,50 @@ import { Storylets } from "../engine/storylets.js"
         // STORYLETS
         if (story.currentChoices.length == 0) {
 
-            storylets.Update();
+            storylets.onUpdated = function () {
 
-            if (storylets.GetAvailable().length == 0) {
-                var choiceParagraphElement = document.createElement('p');
-                choiceParagraphElement.innerHTML = "No storylets available."
-                storyContainer.appendChild(choiceParagraphElement);
-                showAfter(delay, choiceParagraphElement);
-                delay += 200.0;
-            }
+                if (storylets.GetAvailable().length == 0) {
+                    var choiceParagraphElement = document.createElement('p');
+                    choiceParagraphElement.innerHTML = "No storylets available."
+                    storyContainer.appendChild(choiceParagraphElement);
+                    showAfter(delay, choiceParagraphElement);
+                    delay += 200.0;
+                }
 
-            storylets.GetAvailable().forEach(function (storyletName) {
+                storylets.GetAvailable().forEach(function (storyletName) {
 
-                // Create paragraph with anchor element
-                var choiceParagraphElement = document.createElement('p');
-                choiceParagraphElement.classList.add("choice");
-                choiceParagraphElement.innerHTML = `<a href='#'>Storylet: ${storyletName}</a>`
-                storyContainer.appendChild(choiceParagraphElement);
+                    // Create paragraph with anchor element
+                    var choiceParagraphElement = document.createElement('p');
+                    choiceParagraphElement.classList.add("choice");
+                    choiceParagraphElement.innerHTML = `<a href='#'>Storylet: ${storyletName}</a>`
+                    storyContainer.appendChild(choiceParagraphElement);
 
-                // Fade choice in after a short delay
-                showAfter(delay, choiceParagraphElement);
-                delay += 200.0;
+                    // Fade choice in after a short delay
+                    showAfter(delay, choiceParagraphElement);
+                    delay += 200.0;
 
-                // Click on choice
-                var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
-                choiceAnchorEl.addEventListener("click", function (event) {
+                    // Click on choice
+                    var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
+                    choiceAnchorEl.addEventListener("click", function (event) {
 
-                    // Don't follow <a> link
-                    event.preventDefault();
+                        // Don't follow <a> link
+                        event.preventDefault();
 
-                    // Remove all existing choices
-                    removeAll(".choice");
+                        // Remove all existing choices
+                        removeAll(".choice");
 
-                    // Tell the story where to go next
-                    storylets.ChooseStorylet(storyletName);
+                        // Tell the story where to go next
+                        storylets.ChooseStorylet(storyletName);
 
-                    // This is where the save button will save from
-                    savePoint = story.state.toJson();
+                        // This is where the save button will save from
+                        savePoint = story.state.toJson();
 
-                    // Aaand loop
-                    continueStory();
+                        // Aaand loop
+                        continueStory();
+                    });
                 });
-            });
-
+            }
+            storylets.StartUpdate();
         }
         // END STORYLETS
 
