@@ -28,6 +28,11 @@ class StoryletStats {
 
 export class Storylets {
 
+    // Number of storylets to requery every update frame.
+    static UPDATE_COUNT = 10;
+    // MS between update frames
+    static UPDATE_RATE_MS = 16;
+
     #story = null;
     #decks = {};
     #available = [];
@@ -133,11 +138,8 @@ export class Storylets {
         setTimeout(function () { rcv.#processUpdateChunk(); }, Storylets.UPDATE_RATE_MS);
     }
 
-    static UPDATE_NUMBER = 1000;
-    static UPDATE_RATE_MS = 16;
-
     #processUpdateChunk() {
-        var count = Math.min(Storylets.UPDATE_NUMBER, this.#rebuildList.length);
+        var count = Math.min(Storylets.UPDATE_COUNT, this.#rebuildList.length);
 
         for (var i = 0; i < count; i++) {
             var storyletName = this.#rebuildList.shift();
