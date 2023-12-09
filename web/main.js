@@ -2,19 +2,18 @@ import { Storylets } from "../engine/storylets.js"
 
 (function (storyContent) {
 
-    console.log("CREATE STORY");
+    //console.log("CREATE STORY");
     // Create ink story from the content using inkjs
     var story = new inkjs.Story(storyContent);
 
-    console.log("DO STORYLETS");
+    //console.log("DO STORYLETS");
     // STORYLETS
     var storylets = new Storylets(story);
     var infoContainer = document.querySelector('#info');
-    infoContainer.innerHTML = "<div>" + storylets.ListDecks() + "</div>";
-    infoContainer.innerHTML += "<div>" + storylets.ListAvailable() + "</div>";
+    infoContainer.innerHTML = "<div>Decks Added: " + storylets.ListDecks() + "</div>";
     // STORYLETS
 
-    story.ChoosePathString("main");
+    //console.log(story);
 
     var savePoint = "";
 
@@ -201,6 +200,53 @@ import { Storylets } from "../engine/storylets.js"
             });
         });
 
+        if (story.currentChoices.length == 0) {
+
+            storylets.Update();
+
+            if (storylets.GetAvailable().length == 0) {
+                var choiceParagraphElement = document.createElement('p');
+                choiceParagraphElement.innerHTML = "No storylets available."
+                storyContainer.appendChild(choiceParagraphElement);
+                showAfter(delay, choiceParagraphElement);
+                delay += 200.0;
+            }
+
+            storylets.GetAvailable().forEach(function (storyletName) {
+
+                // Create paragraph with anchor element
+                var choiceParagraphElement = document.createElement('p');
+                choiceParagraphElement.classList.add("choice");
+                choiceParagraphElement.innerHTML = `<a href='#'>Storylet: ${storyletName}</a>`
+                storyContainer.appendChild(choiceParagraphElement);
+
+                // Fade choice in after a short delay
+                showAfter(delay, choiceParagraphElement);
+                delay += 200.0;
+
+                // Click on choice
+                var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
+                choiceAnchorEl.addEventListener("click", function (event) {
+
+                    // Don't follow <a> link
+                    event.preventDefault();
+
+                    // Remove all existing choices
+                    removeAll(".choice");
+
+                    // Tell the story where to go next
+                    storylets.ChooseStorylet(storyletName);
+
+                    // This is where the save button will save from
+                    savePoint = story.state.toJson();
+
+                    // Aaand loop
+                    continueStory();
+                });
+            });
+
+        }
+
         // Extend height to fit
         // We do this manually so that removing elements and creating new ones doesn't
         // cause the height (and therefore scroll) to jump backwards temporarily.
@@ -213,6 +259,7 @@ import { Storylets } from "../engine/storylets.js"
 
     function restart() {
         story.ResetState();
+        storylets.Reset();
 
         setVisible(".header", true);
 

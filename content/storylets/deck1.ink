@@ -10,6 +10,7 @@ Deck 1, Storylet 1
 -> END
 
 === deck1_storylet2 ===
+#st-repeat: true
 Deck 1, Storylet 2
 -> END
 
