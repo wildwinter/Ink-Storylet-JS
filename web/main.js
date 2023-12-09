@@ -9,11 +9,7 @@ import { Storylets } from "../engine/storylets.js"
     //console.log("DO STORYLETS");
     // STORYLETS
     var storylets = new Storylets(story);
-    var infoContainer = document.querySelector('#info');
-    infoContainer.innerHTML = "<div>Decks Added: " + storylets.ListDecks() + "</div>";
     // STORYLETS
-
-    //console.log(story);
 
     var savePoint = "";
 
@@ -200,6 +196,7 @@ import { Storylets } from "../engine/storylets.js"
             });
         });
 
+        // STORYLETS
         if (story.currentChoices.length == 0) {
 
             storylets.Update();
@@ -246,6 +243,7 @@ import { Storylets } from "../engine/storylets.js"
             });
 
         }
+        // END STORYLETS
 
         // Extend height to fit
         // We do this manually so that removing elements and creating new ones doesn't

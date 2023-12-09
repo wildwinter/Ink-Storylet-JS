@@ -17,6 +17,14 @@ function GetAllKnotIDs(story) {
     return knotList;
 }
 
+class DeckContents {
+    storyletNames = [];
+}
+
+class StoryletStats {
+    used = false;
+    tags = {};
+}
 
 export class Storylets {
 
@@ -60,7 +68,7 @@ export class Storylets {
 
     #i_add_deck(deckName) {
         //console.log("Add deck:" + deckName);
-        this.#decks[deckName] = {};
+        this.#decks[deckName] = new DeckContents();
     }
 
     // -------------------------------------------------------------------------
@@ -77,7 +85,7 @@ export class Storylets {
                 this.#readTags(knotName);
             }
 
-            this.#decks[deckName]["storyletNames"] = storyletNames;
+            this.#decks[deckName].storyletNames = storyletNames;
             //console.log("DECK:" + deckName);
             //console.log(deckKnots.join());
         }
@@ -115,9 +123,8 @@ export class Storylets {
                 continue;
 
             const deck = this.#decks[deckName];
-            const deckKnots = deck["storyletNames"];
 
-            for (const storyletName of deckKnots) {
+            for (const storyletName of deck.storyletNames) {
                 var storyletAvailable = this.#checkStoryletAvailable(storyletName)
                 //console.log("Storylet " + storyletName + " available:" + storyletAvailable);
 
@@ -142,6 +149,7 @@ export class Storylets {
     }
 
     // Call the _<storyletName>() function. If true, the storylet will be included.
+    // If it doesn't exist, true is assumed.
     #checkStoryletAvailable(storyletName) {
 
         var shouldRepeat = this.#getStoryletTag(storyletName, "st-repeat", false);
@@ -164,24 +172,24 @@ export class Storylets {
 
     #getStoryletStats(storyletName) {
         if (!this.#stats.hasOwnProperty(storyletName)) {
-            this.#stats[storyletName] = { 'used': false, 'tags': {} };
+            this.#stats[storyletName] = new StoryletStats();
         }
         return this.#stats[storyletName];
     }
 
     #markStoryletUsed(storyletName) {
         var stats = this.#getStoryletStats(storyletName);
-        stats['used'] = true;
+        stats.used = true;
     }
 
     #isStoryletUsed(storyletName) {
         var stats = this.#getStoryletStats(storyletName);
-        return stats['used'];
+        return stats.used;
     }
 
     #getStoryletTags(storyletName) {
         var stats = this.#getStoryletStats(storyletName);
-        return stats['tags'];
+        return stats.tags;
     }
 
     #getStoryletTag(storyletName, tagName, defaultValue) {
@@ -215,6 +223,6 @@ export class Storylets {
                 tags[tag] = value;
             }
         }
-        stats['tags'] = tags;
+        stats.tags = tags;
     }
 }

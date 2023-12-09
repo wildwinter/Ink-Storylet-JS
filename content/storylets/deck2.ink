@@ -1,5 +1,7 @@
 ~ add_deck("deck2")
 
+// If this returns false, none of the storylets
+// in this deck are checked for availability.
 === function _deck2() ===
 ~ return true
 
