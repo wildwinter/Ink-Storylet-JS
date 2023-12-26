@@ -175,7 +175,7 @@ export class Storylets {
     // If it doesn't exist, true is assumed.
     #checkStoryletAvailable(storyletName) {
 
-        var shouldRepeat = this.#getStoryletTag(storyletName, "st-repeat", false);
+        var shouldRepeat = this.getStoryletTag(storyletName, "st-repeat", false);
         if (!shouldRepeat) {
 
             // One-use only
@@ -215,7 +215,7 @@ export class Storylets {
         return stats.tags;
     }
 
-    #getStoryletTag(storyletName, tagName, defaultValue) {
+    getStoryletTag(storyletName, tagName, defaultValue) {
         var tags = this.#getStoryletTags(storyletName);
         if (!tags.hasOwnProperty(tagName))
             return defaultValue;
