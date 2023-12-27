@@ -19,10 +19,12 @@ body {
     margin: 0;
 }
 
-.storylet {
-    display: inline-block;
+#storylets {
     width: 30%;
-    height: 100px;
+    float: left;
+}
+
+.storylet {
     text-align: center;
     align-items: center;
     line-height: 1.7em;

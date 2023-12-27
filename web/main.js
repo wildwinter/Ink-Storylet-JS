@@ -1,6 +1,7 @@
 import { Storylets } from "../engine/storylets.js"
 
 var storyRoot = document.querySelector('#story');
+var storyletRoot = document.querySelector("#storylets")
 
 // Load Ink story.
 var story = new inkjs.Story(storyContent);
@@ -16,6 +17,10 @@ updateStorylets();
 
 function updateStorylets() {
     storylets.StartUpdate();
+    removeAllChildren(storyletRoot);
+    var para = document.createElement('h2');
+    para.innerHTML = "Updating Storylets";
+    storyletRoot.appendChild(para);
 }
 
 function scrollToBottom() {
@@ -24,15 +29,23 @@ function scrollToBottom() {
 
 function onStoryletsUpdated() {
 
+    removeAllChildren(storyletRoot);
+
+    var para = document.createElement('h2');
+    para.innerHTML = "Available Storylets";
+    storyletRoot.appendChild(para);
+    addButtons();
+
     if (storylets.GetAvailable().length == 0) {
-        var para = document.createElement('p');
+        para = document.createElement('p');
         para.innerHTML = "No storylets available. Story ended!"
-        storyRoot.appendChild(para);
-
-        scrollToBottom();
-
+        storyletRoot.appendChild(para);
         return;
     }
+
+    para = document.createElement('p');
+    para.innerHTML = "Pick a storylet to play:";
+    storyletRoot.appendChild(para);
 
     storylets.GetAvailable().forEach(function (storyletName) {
 
@@ -46,7 +59,7 @@ function onStoryletsUpdated() {
 
         para.innerHTML = content;
 
-        storyRoot.appendChild(para);
+        storyletRoot.appendChild(para);
 
         // Click on choice
         var paraAnchor = para.querySelectorAll("a")[0];
@@ -59,13 +72,14 @@ function onStoryletsUpdated() {
             chooseStorylet(storyletName);
         });
     });
-
-    scrollToBottom();
 }
 
 function chooseStorylet(storyletName) {
     storylets.ChooseStorylet(storyletName);
-
+    removeAllChildren(storyletRoot);
+    var para = document.createElement('h2');
+    para.innerHTML = "Running story...";
+    storyletRoot.appendChild(para);
     runInk();
 }
 
@@ -115,11 +129,35 @@ function chooseChoice(index) {
     runInk();
 }
 
-/*
-function removeAll(selector) {
-    var allElements = storyContainer.querySelectorAll(selector);
-    for (var i = 0; i < allElements.length; i++) {
-        var el = allElements[i];
-        el.parentNode.removeChild(el);
+function reset() {
+    story.ResetState();
+    storylets.Reset();
+
+    removeAllChildren(storyRoot);
+
+    updateStorylets();
+}
+
+function addButtons() {
+    let para = document.createElement('p');
+    para.addEventListener("click", function (event) {
+        reset();
+    });
+    var content = `<a href='#'>Restart</a>`;
+    para.innerHTML = content;
+    storyletRoot.appendChild(para);
+    var paraAnchor = para.querySelectorAll("a")[0];
+    paraAnchor.addEventListener("click", function (event) {
+
+        // Don't follow <a> link
+        event.preventDefault();
+
+        reset();
+    });
+}
+
+function removeAllChildren(el) {
+    while (el.firstChild) {
+        el.removeChild(el.firstChild);
     }
-}*/
+}
