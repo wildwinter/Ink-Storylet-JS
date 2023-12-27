@@ -176,7 +176,7 @@ img {
 .storylet {
     display: inline-block;
     width: 30%;
-    //height: 50px;
+    height: 100px;
     text-align: center;
     align-items: center;
     line-height: 1.7em;
