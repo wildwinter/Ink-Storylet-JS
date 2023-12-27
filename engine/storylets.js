@@ -24,6 +24,14 @@ class DeckContents {
 class StoryletStats {
     used = false;
     tags = {};
+
+    load(savedObj) {
+        this.used = savedObj;
+    }
+
+    save() {
+        return this.used;
+    }
 }
 
 export class Storylets {
@@ -40,6 +48,7 @@ export class Storylets {
     #stats = {};
     #rebuildList = [];
     onUpdated = null;
+    #updateRunning = null;
 
     constructor(story) {
         this.#story = story;
@@ -100,6 +109,7 @@ export class Storylets {
         this.#knotNames = [];
         this.#stats = {};
         this.#rebuildList = [];
+        this.#cancelUpdate();
         this.#init();
         this.StartUpdate();
     }
@@ -117,7 +127,33 @@ export class Storylets {
         this.#story.ChoosePathString(storyletName);
     }
 
+    SaveJson() {
+        var saveStats = {};
+        for (const key in this.#stats) {
+            var stats = this.#stats[key];
+            saveStats[key] = stats.save();
+        }
+        return JSON.stringify(saveStats);
+    }
+
+    LoadJson(saveStats) {
+        var savedObject = JSON.parse(saveStats);
+        for (const key in savedObject) {
+            var stats = this.#getStoryletStats(key);
+            stats.load(savedObject[key]);
+        }
+    }
+
+    #cancelUpdate() {
+        if (this.#updateRunning == null)
+            return;
+        clearTimeout(this.#updateRunning);
+        this.#updateRunning = null;
+    }
+
     StartUpdate() {
+        this.#cancelUpdate()
+
         this.#rebuildList = [];
         this.#available = [];
 
@@ -135,7 +171,7 @@ export class Storylets {
             }
         }
         var rcv = this;
-        setTimeout(function () { rcv.#processUpdateChunk(); }, Storylets.UPDATE_RATE_MS);
+        this.#updateRunning = setTimeout(function () { rcv.#processUpdateChunk(); }, Storylets.UPDATE_RATE_MS);
     }
 
     #processUpdateChunk() {
@@ -153,9 +189,10 @@ export class Storylets {
 
         if (this.#rebuildList.length > 0) {
             var rcv = this;
-            setTimeout(function () { rcv.#processUpdateChunk(); }, Storylets.UPDATE_RATE_MS);
+            this.#updateRunning = setTimeout(function () { rcv.#processUpdateChunk(); }, Storylets.UPDATE_RATE_MS);
             return;
         }
+        this.#updateRunning = null;
         if (this.onUpdated != null)
             this.onUpdated();
     }

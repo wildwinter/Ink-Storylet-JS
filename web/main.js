@@ -5,7 +5,6 @@ import { Storylets } from "../engine/storylets.js"
     // Create ink story from the content using inkjs
     var story = new inkjs.Story(storyContent);
 
-    //console.log("DO STORYLETS");
     // STORYLETS
     var storylets = new Storylets(story);
     storylets.onUpdated = function () {
@@ -20,7 +19,7 @@ import { Storylets } from "../engine/storylets.js"
     var outerScrollContainer = document.querySelector('.outerContainer');
 
     // page features setup
-    var hasSave = loadSavePoint();
+    var hasSave = loadState();
     setupButtons(hasSave);
 
     // Set initial save point
@@ -44,94 +43,11 @@ import { Storylets } from "../engine/storylets.js"
 
             // Get ink to generate the next paragraph
             var paragraphText = story.Continue();
-            var tags = story.currentTags;
-
-            // Any special tags included with this line
-            var customClasses = [];
-            for (var i = 0; i < tags.length; i++) {
-                var tag = tags[i];
-
-                // Detect tags of the form "X: Y". Currently used for IMAGE and CLASS but could be
-                // customised to be used for other things too.
-                var splitTag = splitPropertyTag(tag);
-
-                // AUDIO: src
-                if (splitTag && splitTag.property == "AUDIO") {
-                    if ('audio' in this) {
-                        this.audio.pause();
-                        this.audio.removeAttribute('src');
-                        this.audio.load();
-                    }
-                    this.audio = new Audio(splitTag.val);
-                    this.audio.play();
-                }
-
-                // AUDIOLOOP: src
-                else if (splitTag && splitTag.property == "AUDIOLOOP") {
-                    if ('audioLoop' in this) {
-                        this.audioLoop.pause();
-                        this.audioLoop.removeAttribute('src');
-                        this.audioLoop.load();
-                    }
-                    this.audioLoop = new Audio(splitTag.val);
-                    this.audioLoop.play();
-                    this.audioLoop.loop = true;
-                }
-
-                // IMAGE: src
-                if (splitTag && splitTag.property == "IMAGE") {
-                    var imageElement = document.createElement('img');
-                    imageElement.src = splitTag.val;
-                    storyContainer.appendChild(imageElement);
-
-                    showAfter(delay, imageElement);
-                    delay += 200.0;
-                }
-
-                // LINK: url
-                else if (splitTag && splitTag.property == "LINK") {
-                    window.location.href = splitTag.val;
-                }
-
-                // LINKOPEN: url
-                else if (splitTag && splitTag.property == "LINKOPEN") {
-                    window.open(splitTag.val);
-                }
-
-                // BACKGROUND: src
-                else if (splitTag && splitTag.property == "BACKGROUND") {
-                    outerScrollContainer.style.backgroundImage = 'url(' + splitTag.val + ')';
-                }
-
-                // CLASS: className
-                else if (splitTag && splitTag.property == "CLASS") {
-                    customClasses.push(splitTag.val);
-                }
-
-                // CLEAR - removes all existing content.
-                // RESTART - clears everything and restarts the story from the beginning
-                else if (tag == "CLEAR" || tag == "RESTART") {
-                    removeAll("p");
-                    removeAll("img");
-
-                    // Comment out this line if you want to leave the header visible when clearing
-                    setVisible(".header", false);
-
-                    if (tag == "RESTART") {
-                        restart();
-                        return;
-                    }
-                }
-            }
 
             // Create paragraph element (initially hidden)
             var paragraphElement = document.createElement('p');
             paragraphElement.innerHTML = paragraphText;
             storyContainer.appendChild(paragraphElement);
-
-            // Add any custom classes derived from ink tags
-            for (var i = 0; i < customClasses.length; i++)
-                paragraphElement.classList.add(customClasses[i]);
 
             // Fade in paragraph after a short delay
             showAfter(delay, paragraphElement);
@@ -336,18 +252,44 @@ import { Storylets } from "../engine/storylets.js"
     }
 
     // Loads save state if exists in the browser memory
-    function loadSavePoint() {
+    function loadState() {
 
         try {
+            var loaded = true;
+
             let savedState = window.localStorage.getItem('save-state');
             if (savedState) {
                 story.state.LoadJson(savedState);
-                return true;
             }
+            else {
+                loaded = false;
+            }
+
+            if (loaded) {
+                var savedStorylet = window.localStorage.getItem('save-storylets');
+                if (savedStorylet) {
+                    storylets.LoadJson(savedStorylet);
+                }
+                else {
+                    loaded = false;
+                }
+            }
+
+            return loaded;
         } catch (e) {
             console.debug("Couldn't load save state");
         }
         return false;
+    }
+
+    function saveState() {
+        try {
+            window.localStorage.setItem('save-state', savePoint);
+            window.localStorage.setItem('save-storylets', storylets.SaveJson());
+        } catch (e) {
+            console.warn("Couldn't save state");
+        }
+
     }
 
     // Used to hook up the functionality for global functionality buttons
@@ -363,14 +305,8 @@ import { Storylets } from "../engine/storylets.js"
 
         let saveEl = document.getElementById("save");
         if (saveEl) saveEl.addEventListener("click", function (event) {
-            try {
-                window.localStorage.setItem('save-state', savePoint);
-                document.getElementById("reload").removeAttribute("disabled");
-                window.localStorage.setItem('theme', document.body.classList.contains("dark") ? "dark" : "");
-            } catch (e) {
-                console.warn("Couldn't save state");
-            }
-
+            saveState();
+            document.getElementById("reload").removeAttribute("disabled");
         });
 
         let reloadEl = document.getElementById("reload");
@@ -383,12 +319,7 @@ import { Storylets } from "../engine/storylets.js"
 
             removeAll("p");
             removeAll("img");
-            try {
-                let savedState = window.localStorage.getItem('save-state');
-                if (savedState) story.state.LoadJson(savedState);
-            } catch (e) {
-                console.debug("Couldn't load save state");
-            }
+            loadState();
             continueStory(true);
         });
     }
