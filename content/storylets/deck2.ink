@@ -1,9 +1,10 @@
 ~ add_deck("deck2")
+VAR wizards_allowed = false
 
 // If this returns false, none of the storylets
 // in this deck are checked for availability.
 === function _deck2() ===
-~ return true
+~ return wizards_allowed
 
 === deck2_storylet1 ===
 #desc: This is Deck 2, Storylet 1.

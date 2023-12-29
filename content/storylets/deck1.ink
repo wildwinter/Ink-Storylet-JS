@@ -5,25 +5,39 @@
 === function _deck1() ===
 ~ return true
 
-=== function _deck1_storylet1() ===
-~ return false
-=== deck1_storylet1 ===
-#desc: This is Deck 1, Storylet 1
-Deck 1, Storylet 1
+=== deck1_intro ===
+#desc: This is the intro
+Hi, welcome to this test.
 -> END
 
-=== deck1_storylet2 ===
+=== function _deck1_repeater() ===
+// Taking advantage of the Ink built in  - a knot is also a count of playing that knot!
+// So this returns true if deck1_intro has been played.
+~ return deck1_intro
+=== deck1_repeater ===
 #st-repeat: true
-#desc: This is Deck 1, Storylet 2. It repeats.
-Deck 1, Storylet 2
-+ [Choice 1]
+#desc: This is a repeating storylet.
+I will always come back.
++ [Hello there...]
     Hello!
-+ [Choice 2]
-    Goodbye!
++ [Not you again!]
+    Sorry! That's how I work.
 -
 -> END
 
-=== deck1_storylet3 ===
-#desc: This is Deck 1, Storylet 3.
-Deck 1, Storylet 3
+=== function _deck1_unlock() ===
+// Taking advantage of the Ink built in  - a knot is also a count of playing that knot!
+// So this returns true if deck1_intro has been played.
+~ return deck1_intro and not wizards_allowed
+=== deck1_unlock ===
+#st-repeat: true
+#desc: Unlocks deck 2!
+Do you want to be a wizard?
++ [Yes]
+    You're a wizard!
+    Unlocked deck 2.
+    ~ wizards_allowed = true
++ [No]
+    Never mind. This will repeat now until you change your mind.
+-
 -> END

@@ -97,18 +97,25 @@ function runInk() {
     }
 
     if (story.currentChoices.length == 0) {
+        // Ink complete
+
+        var hr = document.createElement('hr');
+        storyRoot.appendChild(hr);
+
         updateStorylets();
         return;
     }
 
+    var ul = document.createElement('ul');
+    ul.classList.add("choices");
+
     // Create HTML choices from ink choices
     story.currentChoices.forEach(function (choice) {
 
-        // Create paragraph with anchor element
-        var para = document.createElement('p');
+        var para = document.createElement('li');
         para.classList.add("choice");
         para.innerHTML = `<a href='#'>${choice.text}</a>`
-        storyRoot.appendChild(para);
+        ul.appendChild(para);
 
         // Click on choice
         var paraAnchor = para.querySelectorAll("a")[0];
@@ -121,11 +128,14 @@ function runInk() {
         });
     });
 
+    storyRoot.appendChild(ul);
+
     scrollToBottom();
 }
 
 function chooseChoice(index) {
     story.ChooseChoiceIndex(index);
+    removeAllChildrenWith(storyRoot, ".choices");
     runInk();
 }
 
@@ -159,5 +169,13 @@ function addButtons() {
 function removeAllChildren(el) {
     while (el.firstChild) {
         el.removeChild(el.firstChild);
+    }
+}
+
+function removeAllChildrenWith(el, selector) {
+    var elements = el.querySelectorAll(selector);
+    for (var i = 0; i < elements.length; i++) {
+        var child = elements[i];
+        child.parentNode.removeChild(child);
     }
 }
