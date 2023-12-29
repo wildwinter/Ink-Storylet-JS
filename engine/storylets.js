@@ -70,10 +70,6 @@ export class Storylets {
 
         // For each Deck added, build a list of storylets.
         this.#buildDecks();
-
-        // Move to the entrypoint, if it exists:
-        if (this.#knotNames.includes("start"))
-            this.#story.ChoosePathString("start");
     }
 
     // ------------------------- Ink External Functions ------------------------
