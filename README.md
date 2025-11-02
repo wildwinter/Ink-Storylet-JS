@@ -203,8 +203,12 @@ storylets.ChooseStorylet(storyletName);
 
 Then run Ink normally via `story.Continue()` until you run out of content or make choices or whatever you want to do… and once you’ve run out of Ink, call `StartUpdate()` and get a new list of available storylets.
 
-## Map-Test: Simple Javascript Test Harness
+## Map-Test: Map-Based Javascript Test Harness
+
+![Screenshot](docs/mapshot.png)
+
 Take a look at the code for `apps/map-test` in the repo — this is a lightweight Javascript implementation of a 'world map'. Each storylet has a `#loc` tag which specifies which location on the map it's associated with. The locations are set up in `web\main.js`:
+
 ```javascript
 MapSymbolManager.addSymbol({left: "40%", top: "25%", id: "town_hall", title: "Town Hall 🏛️", description: "The civic heart of the town. Built in 1898."});
 

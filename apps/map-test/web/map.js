@@ -8,7 +8,6 @@ export const MapSymbolManager = {
         _mapClickHandler = clickHandler;
     },
     
-    // 1. Centralized function to attach the click listener
     _attachClickListener: function(element) {
         element.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -18,14 +17,12 @@ export const MapSymbolManager = {
         });
     },
 
-    // 2. Function to create the HTML string for a new symbol
     _createSymbolHTML: function(data) {
         if (!data.id || !data.title || !data.description || !data.left || !data.top) {
             console.error("Missing required data for new symbol.", data);
             return null;
         }
 
-        // Construct the full HTML element string
         return `
             <div 
                 class="map-hit-area" 
@@ -44,27 +41,21 @@ export const MapSymbolManager = {
         `;
     },
 
-    // 3. Public method to programmatically add a new symbol (with callback)
     addSymbol: function(data) {
         const html = this._createSymbolHTML(data);
         if (!html) return;
 
-        // Use DOM manipulation to create the element
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html.trim();
         const newArea = tempDiv.firstChild;
         
-        // Append the element to the map container
         _mapContainer.appendChild(newArea);
 
-        // **CRITICAL: Attach the click handler immediately**
         this._attachClickListener(newArea);
         
-        //console.log(`Symbol '${data.title}' (ID: ${data.id}) added and callback set.`);
         return newArea;
     },
     
-    // 5. Helper to get the symbol element by ID
     _getSymbolElement: function(id) {
         const element = document.getElementById(`map-${id}`);
         if (!element) {
@@ -73,7 +64,6 @@ export const MapSymbolManager = {
         return element;
     },
 
-    // 6. Public method to show a symbol
     showSymbol: function(id) {
         const element = this._getSymbolElement(id);
         if (element) {
@@ -81,7 +71,6 @@ export const MapSymbolManager = {
         }
     },
 
-    // 7. Public method to hide a symbol
     hideSymbol: function(id) {
         const element = this._getSymbolElement(id);
         if (element) {
@@ -101,7 +90,7 @@ export const MapSymbolManager = {
     },
 
     iterateSymbols: function(callback) {
-        // Select all elements with the map-hit-area class inside the map container
+
         const allSymbols = _mapContainer.querySelectorAll('.map-hit-area');
 
         allSymbols.forEach(element => {
@@ -109,16 +98,16 @@ export const MapSymbolManager = {
             const title = element.getAttribute('data-tooltip-title');
             const isVisible = element.style.display !== 'none';
             
-            // Execute the provided callback function
-            // Pass the element itself, its ID, title, and visibility status
             callback(element, id, title, isVisible);
         });
     },
 
+    // Stop the map being clickable
     lockMap:function() {
         _mapContainer.classList.add('locked');
     },
 
+    // Allow the map to be clickable again.
     unlockMap:function() {
         _mapContainer.classList.remove('locked');
     }
