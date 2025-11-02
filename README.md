@@ -202,3 +202,19 @@ storylets.ChooseStorylet(storyletName);
 ```
 
 Then run Ink normally via `story.Continue()` until you run out of content or make choices or whatever you want to do… and once you’ve run out of Ink, call `StartUpdate()` and get a new list of available storylets.
+
+## Map-Test: Simple Javascript Test Harness
+Take a look at the code for `apps/map-test` in the repo — this is a lightweight Javascript implementation of a 'world map'. Each storylet has a `#loc` tag which specifies which location on the map it's associated with. The locations are set up in `web\main.js`:
+```javascript
+MapSymbolManager.addSymbol({left: "40%", top: "25%", id: "town_hall", title: "Town Hall 🏛️", description: "The civic heart of the town. Built in 1898."});
+
+MapSymbolManager.addSymbol({left: "77%", top: "37%", id: "library", title: "The Library 📚", description: "Historic records and modern media center."});
+
+MapSymbolManager.addSymbol({left: "71.5%", top: "85%", id: "east", title: "East House 🏠", description: "House belonging to the East family."});
+
+MapSymbolManager.addSymbol({left: "22%", top: "62%", id: "bar", title: "Frog & Horses 🍺", description: "Local bar and club."});
+
+MapSymbolManager.addSymbol({left: "56%", top: "35%", id: "cave", title: "A Cave 🌊", description: "Cave which the river disappears into."});
+```
+
+Otherwise it works exactly as the `plain-test` version does. Hopefully this gives you some idea how you could use storylets for an implementation of explorable story in a world.
