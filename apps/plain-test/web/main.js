@@ -1,4 +1,4 @@
-import { Storylets } from "../engine/storylets.js"
+import { Storylets } from "../../../engine/storylets.js"
 
 var storyRoot = document.querySelector('#story');
 var storyletRoot = document.querySelector("#storylets")
