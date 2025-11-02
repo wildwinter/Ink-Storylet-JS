@@ -113,5 +113,13 @@ export const MapSymbolManager = {
             // Pass the element itself, its ID, title, and visibility status
             callback(element, id, title, isVisible);
         });
+    },
+
+    lockMap:function() {
+        _mapContainer.classList.add('locked');
+    },
+
+    unlockMap:function() {
+        _mapContainer.classList.remove('locked');
     }
 };

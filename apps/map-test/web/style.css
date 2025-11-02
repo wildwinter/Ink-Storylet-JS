@@ -47,6 +47,18 @@ div {
     border: 1px solid #ccc;
 }
 
+#map-container.locked::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0); /* Invisible background */
+    z-index: 1000; /* Must be higher than any content inside */
+    cursor: not-allowed; /* Optional: Provides user feedback */
+}
+
 .map-image {
     /* Image scales to fit column, maintaining aspect ratio */
     width: 100%;

@@ -56,12 +56,14 @@ function onStoryletsUpdated() {
     });
 
     if (storylets.GetAvailable().length == 0) {
-        console.log("COMPLETE");
+        alert("Story complete! Close this to reset.");
+        reset();
         return;
     }
 }
 
 function chooseStorylet(storyletName) {
+    MapSymbolManager.lockMap();
     storylets.ChooseStorylet(storyletName);
     runInk();
 }
@@ -84,6 +86,8 @@ function runInk() {
 
         var hr = document.createElement('hr');
         storyRoot.appendChild(hr);
+
+        MapSymbolManager.unlockMap();
 
         updateStorylets();
         return;
@@ -136,5 +140,11 @@ function removeAllChildrenWith(el, selector) {
     for (var i = 0; i < elements.length; i++) {
         var child = elements[i];
         child.parentNode.removeChild(child);
+    }
+}
+
+function removeAllChildren(el) {
+    while (el.firstChild) {
+        el.removeChild(el.firstChild);
     }
 }
