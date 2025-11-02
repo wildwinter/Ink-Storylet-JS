@@ -6,9 +6,9 @@
 ~ return true
 
 === deck1_intro ===
-#desc: This is the intro
+#desc: The Beginning
 #loc: east
-Hi, welcome to this test.
+This is the starting point of your adventure, in the East house.
 -> END
 
 === function _deck1_repeater() ===
@@ -17,13 +17,14 @@ Hi, welcome to this test.
 ~ return deck1_intro
 === deck1_repeater ===
 #st-repeat: true
-#desc: This is a repeating storylet.
+#desc: A Night in the Bar
 #loc: bar
-I will always come back.
-+ [Hello there...]
-    Hello!
-+ [Not you again!]
-    Sorry! That's how I work.
+You can always have another drink.
+(Repeating storylet!)
++ [Have a drink...]
+    (drinking noise) Mmm, lovely.
++ [Not this time...]
+    See you next time, buddy!
 -
 -> END
 
@@ -31,16 +32,17 @@ I will always come back.
 // Taking advantage of the Ink built in  - a knot is also a count of playing that knot!
 // So this returns true if deck1_intro has been played.
 ~ return deck1_intro and not wizards_allowed
+
 === deck1_unlock ===
 #st-repeat: true
-#desc: Unlocks deck 2!
+#desc: Read the Magic Book
 #loc: library
-Do you want to be a wizard?
-+ [Yes]
-    You're a wizard!
-    Unlocked deck 2.
+Do you want to read the magic book?
++ [Yes.]
+    Congratulations, you're a wizard!
+    We've unlocked so much more to do! (Unlocked deck 2.)
     ~ wizards_allowed = true
-+ [No]
-    Never mind. This will repeat now until you change your mind.
++ [No.]
+    Never mind. But you can always come back here and read it later. (Repeating storylet.)
 -
 -> END

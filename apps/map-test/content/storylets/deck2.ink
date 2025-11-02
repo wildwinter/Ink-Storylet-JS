@@ -7,19 +7,21 @@ VAR wizards_allowed = false
 ~ return wizards_allowed
 
 === deck2_storylet1 ===
-#desc: This is Deck 2, Storylet 1.
+#desc: Read the Wizard Library Shelves
 #loc: library
-Deck 2, Storylet 1
+Now you're a wizard, you can read what's on the library shelves!
+Let's say you've read them all. No need to come back again.
 -> END
 
 === deck2_storylet2 ===
-#desc: This is Deck 2, Storylet 2.
+#desc: Search the Magic Cave
 #loc: cave
-Deck 2, Storylet 2
+This is the magic cave, which only wizards can search!
+Inside you find nothing much.
 -> END
 
 === deck2_storylet3 ===
-#desc: This is Deck 2, Storylet 3.
+#desc: A Visit Back Home
 #loc: east
-Deck 2, Storylet 3
+Home looks different now you're a wizard.
 -> END
