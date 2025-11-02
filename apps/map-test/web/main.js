@@ -1,7 +1,26 @@
 import { Storylets } from "../../../engine/storylets.js"
+import { MapSymbolManager } from "./map.js"
 
+// Set up map first
+// -----------------------
+
+const handleSymbolClick = (id, title) => {
+    console.log(`Symbol clicked: ${title} (ID: ${id})`);
+    
+    const storylet = storylets.GetAvailableStoryletsWithTag("loc", id)[0];
+    chooseStorylet(storylet);
+};
+
+MapSymbolManager.init("#map-container", handleSymbolClick);
+
+MapSymbolManager.addSymbol({left: "40%", top: "25%", id: "town_hall", title: "Town Hall 🏛️", description: "The civic heart of the town. Built in 1898."});
+MapSymbolManager.addSymbol({left: "77%", top: "37%", id: "library", title: "The Library 📚", description: "Historic records and modern media center."});
+MapSymbolManager.addSymbol({left: "71.5%", top: "85%", id: "east", title: "East House 🏠", description: "House belonging to the East family."});
+MapSymbolManager.addSymbol({left: "22%", top: "62%", id: "bar", title: "Frog & Horses 🍺", description: "Local bar and club."});
+MapSymbolManager.addSymbol({left: "56%", top: "35%", id: "cave", title: "A Cave 🌊", description: "Cave which the river disappears into."});
+
+// -----------------------
 var storyRoot = document.querySelector('#story');
-var storyletRoot = document.querySelector("#storylets")
 
 // Load Ink story.
 var story = new inkjs.Story(storyContent);
@@ -17,10 +36,6 @@ updateStorylets();
 
 function updateStorylets() {
     storylets.StartUpdate();
-    removeAllChildren(storyletRoot);
-    var para = document.createElement('h2');
-    para.innerHTML = "Updating Storylets";
-    storyletRoot.appendChild(para);
 }
 
 function scrollToBottom() {
@@ -29,57 +44,24 @@ function scrollToBottom() {
 
 function onStoryletsUpdated() {
 
-    removeAllChildren(storyletRoot);
-
-    var para = document.createElement('h2');
-    para.innerHTML = "Available Storylets";
-    storyletRoot.appendChild(para);
-    addButtons();
+    MapSymbolManager.iterateSymbols(function(symbolElement, locationId) {
+        // Show or hide symbol based on storylet availability
+        const hasStorylet = storylets.HasAvailableStoryletWithTag("loc", locationId);
+        if (!hasStorylet) {
+            MapSymbolManager.hideSymbol(locationId);
+        } else {
+            MapSymbolManager.showSymbol(locationId);
+        }
+    });
 
     if (storylets.GetAvailable().length == 0) {
-        para = document.createElement('p');
-        para.innerHTML = "No storylets available. Story ended!"
-        storyletRoot.appendChild(para);
+        console.log("COMPLETE");
         return;
     }
-
-    para = document.createElement('p');
-    para.innerHTML = "Pick a storylet to play:";
-    storyletRoot.appendChild(para);
-
-    storylets.GetAvailable().forEach(function (storyletName) {
-
-        // Create paragraph with anchor element
-        var para = document.createElement('p');
-        para.classList.add("storylet");
-        var content = `<a href='#'>${storyletName}</a>`;
-        var desc = storylets.getStoryletTag(storyletName, "desc", null);
-        if (desc != null)
-            content += `<div class="desc">${desc}</div>`;
-
-        para.innerHTML = content;
-
-        storyletRoot.appendChild(para);
-
-        // Click on choice
-        var paraAnchor = para.querySelectorAll("a")[0];
-        paraAnchor.addEventListener("click", function (event) {
-
-            // Don't follow <a> link
-            event.preventDefault();
-
-            // Tell the story where to go next
-            chooseStorylet(storyletName);
-        });
-    });
 }
 
 function chooseStorylet(storyletName) {
     storylets.ChooseStorylet(storyletName);
-    removeAllChildren(storyletRoot);
-    var para = document.createElement('h2');
-    para.innerHTML = "Running story...";
-    storyletRoot.appendChild(para);
     runInk();
 }
 
@@ -146,30 +128,6 @@ function reset() {
     removeAllChildren(storyRoot);
 
     updateStorylets();
-}
-
-function addButtons() {
-    let para = document.createElement('p');
-    para.addEventListener("click", function (event) {
-        reset();
-    });
-    var content = `<a href='#'>Restart</a>`;
-    para.innerHTML = content;
-    storyletRoot.appendChild(para);
-    var paraAnchor = para.querySelectorAll("a")[0];
-    paraAnchor.addEventListener("click", function (event) {
-
-        // Don't follow <a> link
-        event.preventDefault();
-
-        reset();
-    });
-}
-
-function removeAllChildren(el) {
-    while (el.firstChild) {
-        el.removeChild(el.firstChild);
-    }
 }
 
 function removeAllChildrenWith(el, selector) {

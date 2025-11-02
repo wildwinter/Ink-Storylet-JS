@@ -1,7 +1,7 @@
 var _mapContainer = null;
 var _mapClickHandler = null;
 
-const MapSymbolManager = {
+export const MapSymbolManager = {
 
     init: function(containerName, clickHandler) {
         _mapContainer = document.querySelector(containerName);
@@ -30,7 +30,7 @@ const MapSymbolManager = {
             <div 
                 class="map-hit-area" 
                 id="map-${data.id}"
-                style="left: ${data.left}; top: ${data.top};"
+                style="left: ${data.left}; top: ${data.top}; display:none;"
                 data-location-id="${data.id}"  
                 data-tooltip-title="${data.title}"
                 data-tooltip-description="${data.description}"
@@ -87,5 +87,20 @@ const MapSymbolManager = {
         if (element) {
             element.style.display = 'none';
         }
+    },
+
+    iterateSymbols: function(callback) {
+        // Select all elements with the map-hit-area class inside the map container
+        const allSymbols = _mapContainer.querySelectorAll('.map-hit-area');
+
+        allSymbols.forEach(element => {
+            const id = element.getAttribute('data-location-id');
+            const title = element.getAttribute('data-tooltip-title');
+            const isVisible = element.style.display !== 'none';
+            
+            // Execute the provided callback function
+            // Pass the element itself, its ID, title, and visibility status
+            callback(element, id, title, isVisible);
+        });
     }
 };

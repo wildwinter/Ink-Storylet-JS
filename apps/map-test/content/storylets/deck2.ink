@@ -8,15 +8,18 @@ VAR wizards_allowed = false
 
 === deck2_storylet1 ===
 #desc: This is Deck 2, Storylet 1.
+#loc: library
 Deck 2, Storylet 1
 -> END
 
 === deck2_storylet2 ===
 #desc: This is Deck 2, Storylet 2.
+#loc: cave
 Deck 2, Storylet 2
 -> END
 
 === deck2_storylet3 ===
 #desc: This is Deck 2, Storylet 3.
+#loc: east
 Deck 2, Storylet 3
 -> END

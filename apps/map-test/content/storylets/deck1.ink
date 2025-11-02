@@ -7,6 +7,7 @@
 
 === deck1_intro ===
 #desc: This is the intro
+#loc: east
 Hi, welcome to this test.
 -> END
 
@@ -17,6 +18,7 @@ Hi, welcome to this test.
 === deck1_repeater ===
 #st-repeat: true
 #desc: This is a repeating storylet.
+#loc: bar
 I will always come back.
 + [Hello there...]
     Hello!
@@ -32,6 +34,7 @@ I will always come back.
 === deck1_unlock ===
 #st-repeat: true
 #desc: Unlocks deck 2!
+#loc: library
 Do you want to be a wizard?
 + [Yes]
     You're a wizard!

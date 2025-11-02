@@ -37,27 +37,7 @@ div {
     padding:10px;
     height:100vh;
     overflow-y: auto;
-    background-color: rgba(255, 255, 0, 0.9);
-}
-
-#storylets {
-    width: 30%;
-}
-
-.storylet {
-    text-align: center;
-    align-items: center;
-    line-height: 1.7em;
-    border: 2px solid #555;
-    margin: 5px;
-}
-
-.storylet a {
-    font-size: 12pt;
-}
-
-.storylet .desc {
-    font-size: 11px;
+    background-color: rgba(255, 255, 255);
 }
 
 #map-container {

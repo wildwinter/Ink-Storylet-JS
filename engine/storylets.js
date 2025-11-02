@@ -118,6 +118,24 @@ export class Storylets {
         return this.#available;
     }
 
+    HasAvailableStoryletWithTag(tag, value) {
+        if (value) {
+            return this.#available.some(storylet => this.getStoryletTag(storylet, tag, undefined) == value);
+        }
+        else {
+            return this.#available.some(storylet => this.getStoryletTag(storylet, tag, undefined) != undefined);
+        }
+    }
+
+    GetAvailableStoryletsWithTag(tag, value) {
+        if (value) {
+            return this.#available.filter(storylet => this.getStoryletTag(storylet, tag, undefined) == value);      
+        }
+        else {
+            return this.#available.filter(storylet => this.getStoryletTag(storylet, tag, undefined) != undefined);
+        }
+    }
+
     ChooseStorylet(storyletName) {
         this.#markStoryletUsed(storyletName);
         this.#story.ChoosePathString(storyletName);

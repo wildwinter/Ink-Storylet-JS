@@ -23,68 +23,7 @@
 
     <script src="../../lib/ink/ink.js"></script>
     <script src="../built-content/app.js"></script>
-    <script src="map.js"></script>
     <script src="main.js" type="module"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const rightColumn = document.querySelector('#story');
-
-        // --- Core Callback Function ---
-        const handleSymbolClick = (id, title) => {
-            console.log(`Symbol clicked: ${title} (ID: ${id})`);
-            
-            // Example action: Update the right column
-            rightColumn.innerHTML = `
-                <h2>Details for ${title}</h2>
-                <p>Location ID: ${id}</p>
-            `;
-        };
-
-        MapSymbolManager.init("#map-container", handleSymbolClick);
-
-        MapSymbolManager.addSymbol({
-                id: "town_hall",
-                title: "Town Hall 🏛️",
-                description: "The civic heart of the town. Built in 1898.",
-                left: "40%",
-                top: "25%"
-            });
-
-        MapSymbolManager.addSymbol({
-                id: "library",
-                title: "The Library 📚",
-                description: "Historic records and modern media center.",
-                left: "77%",
-                top: "37%"
-            });
-
-        MapSymbolManager.addSymbol({
-                id: "east",
-                title: "East House 🏠",
-                description: "House belonging to the East family.",
-                left: "71.5%", 
-                top: "85%"  
-            });
-
-        MapSymbolManager.addSymbol({
-                id: "bar",
-                title: "Frog & Horses 🍺",
-                description: "Local bar and club.",
-                left: "22%",
-                top: "62%"
-            });
-
-        MapSymbolManager.addSymbol({
-                id: "cave",
-                title: "A Cave 🌊",
-                description: "Cave which the river disappears into.",
-                left: "56%",
-                top: "35%"
-            });
-        
-    });
-</script>
 </body>
 
 </html>
