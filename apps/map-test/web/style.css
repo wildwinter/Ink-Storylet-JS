@@ -54,7 +54,7 @@ div {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0); /* Invisible background */
+    background: rgba(0, 0, 0, 0.5); 
     z-index: 1000; /* Must be higher than any content inside */
     cursor: not-allowed; /* Optional: Provides user feedback */
 }
@@ -147,4 +147,15 @@ div {
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
     border-top: 6px solid #333; /* Matches background color */
+}
+
+#reset-container {
+    position: absolute;
+    top:0px;
+    right:0px;
+}
+
+#reset-container button {
+    font-size: 12px;
+    font-weight: bold;
 }

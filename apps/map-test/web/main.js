@@ -31,6 +31,13 @@ var storylets = new Storylets(story);
 // Do this when the storylet availability check is completed
 storylets.onUpdated = onStoryletsUpdated;
 
+// Add a reset button
+const resetButtonContainer = document.getElementById('reset-container');
+const resetButton = document.createElement('button');
+resetButton.textContent = "Reset Story";
+resetButton.addEventListener('click', reset);
+resetButtonContainer.appendChild(resetButton);
+
 // Kick off storylet processing which will take at least a frame.
 updateStorylets();
 
@@ -65,6 +72,11 @@ function onStoryletsUpdated() {
 function chooseStorylet(storyletName) {
     MapSymbolManager.lockMap();
     storylets.ChooseStorylet(storyletName);
+    
+    var para = document.createElement('h3');
+    para.innerHTML = storylets.getStoryletTag(storyletName, "desc", "--");
+    storyRoot.appendChild(para);
+
     runInk();
 }
 
@@ -108,7 +120,6 @@ function runInk() {
         var paraAnchor = para.querySelectorAll("a")[0];
         paraAnchor.addEventListener("click", function (event) {
 
-            // Don't follow <a> link
             event.preventDefault();
 
             chooseChoice(choice.index);
@@ -129,6 +140,8 @@ function chooseChoice(index) {
 function reset() {
     story.ResetState();
     storylets.Reset();
+
+    MapSymbolManager.unlockMap();
 
     removeAllChildren(storyRoot);
 
