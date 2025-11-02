@@ -89,6 +89,17 @@ export const MapSymbolManager = {
         }
     },
 
+    setSymbolDesc: function(id, desc) {
+        const element = this._getSymbolElement(id);
+        if (element) {
+            const descriptionElement = element.querySelector('.tooltip-description');
+            element.setAttribute('data-tooltip-description', desc);
+            if (descriptionElement) {
+                descriptionElement.setAttribute('data-description', desc);
+            }
+        }
+    },
+
     iterateSymbols: function(callback) {
         // Select all elements with the map-hit-area class inside the map container
         const allSymbols = _mapContainer.querySelectorAll('.map-hit-area');

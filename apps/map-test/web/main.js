@@ -5,7 +5,7 @@ import { MapSymbolManager } from "./map.js"
 // -----------------------
 
 const handleSymbolClick = (id, title) => {
-    console.log(`Symbol clicked: ${title} (ID: ${id})`);
+    //console.log(`Symbol clicked: ${title} (ID: ${id})`);
     
     const storylet = storylets.GetAvailableStoryletsWithTag("loc", id)[0];
     chooseStorylet(storylet);
@@ -46,11 +46,12 @@ function onStoryletsUpdated() {
 
     MapSymbolManager.iterateSymbols(function(symbolElement, locationId) {
         // Show or hide symbol based on storylet availability
-        const hasStorylet = storylets.HasAvailableStoryletWithTag("loc", locationId);
-        if (!hasStorylet) {
-            MapSymbolManager.hideSymbol(locationId);
-        } else {
+        const available = storylets.GetFirstAvailableStoryletWithTag("loc", locationId);
+        if (available) {
+            MapSymbolManager.setSymbolDesc(locationId, storylets.getStoryletTag(available, "desc", ""));
             MapSymbolManager.showSymbol(locationId);
+        } else {
+            MapSymbolManager.hideSymbol(locationId);
         }
     });
 
