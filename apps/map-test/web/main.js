@@ -1,5 +1,5 @@
 import { Storylets } from "../../../engine/storylets.js"
-import { MapManager } from "./map.js"
+import { Map, MapManager } from "./map.js"
 
 // Set up map first
 // -----------------------
@@ -11,18 +11,37 @@ const handleSymbolClick = (id, title) => {
     chooseStorylet(storylet);
 };
 
+var mainMap = new Map("main", "../images/town-map.png");
+mainMap.addLocation("town_hall", {left: "40%", top: "25%", title: "Town Hall 🏛️"});
+mainMap.addLocation("library", {left: "77%", top: "37%", title: "The Library 📚"});
+mainMap.addLocation("east", {left: "71.5%", top: "85%", title: "East House 🏠"});
+mainMap.addLocation("bar", {left: "22%", top: "62%", title: "Frog & Horses 🍺"});
+mainMap.addLocation("cave", {left: "56%", top: "35%", title: "A Cave 🌊"});
+
+var caveMap = new Map("cave", "../images/cave-map.png");
+caveMap.addLocation("exit", {left: "40%", top: "95%", title: "Exit 🚪"});
+caveMap.addLocation("well", {left: "68%", top: "59%", title: "The Well 💧"});
+
 var mapManager = new MapManager("#map-container", handleSymbolClick);
-mapManager.addSymbol({left: "40%", top: "25%", id: "town_hall", title: "Town Hall 🏛️"});
-mapManager.addSymbol({left: "77%", top: "37%", id: "library", title: "The Library 📚"});
-mapManager.addSymbol({left: "71.5%", top: "85%", id: "east", title: "East House 🏠"});
-mapManager.addSymbol({left: "22%", top: "62%", id: "bar", title: "Frog & Horses 🍺"});
-mapManager.addSymbol({left: "56%", top: "35%", id: "cave", title: "A Cave 🌊"});
+mapManager.addMap(mainMap);
+mapManager.addMap(caveMap);
+
+mapManager.setMap("main");
 
 // -----------------------
 var storyRoot = document.querySelector('#story');
 
 // Load Ink story.
 var story = new inkjs.Story(storyContent);
+
+// Bind the map handlers to my Ink external functions
+story.BindExternalFunction("set_map", function(mapName) {
+    mapManager.setMap(mapName);
+});
+
+story.BindExternalFunction("get_map", function() {
+    return mapManager.getCurrentMapName();
+});
 
 // Set up Storylets
 var storylets = new Storylets(story);

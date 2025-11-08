@@ -1,1 +1,1 @@
-Map image by user Hey-Juda on Pixabay.
+Town map image by user Hey-Juda on Pixabay.

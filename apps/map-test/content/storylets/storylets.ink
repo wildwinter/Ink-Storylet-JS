@@ -1,2 +1,3 @@
-INCLUDE storylets/deck1.ink
-INCLUDE storylets/deck2.ink
+INCLUDE storylets/main.ink
+INCLUDE storylets/wizard.ink
+INCLUDE storylets/cave.ink
