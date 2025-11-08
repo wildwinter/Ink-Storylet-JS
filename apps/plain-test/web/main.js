@@ -90,7 +90,7 @@ function runInk() {
         // Get ink to generate the next paragraph
         var paragraphText = story.Continue();
 
-        // Create paragraph element (initially hidden)
+        // Create paragraph element
         var para = document.createElement('p');
         para.innerHTML = paragraphText;
         storyRoot.appendChild(para);
@@ -102,6 +102,8 @@ function runInk() {
         var hr = document.createElement('hr');
         storyRoot.appendChild(hr);
 
+        scrollToBottom();
+        
         updateStorylets();
         return;
     }

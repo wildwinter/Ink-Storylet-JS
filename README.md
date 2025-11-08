@@ -210,11 +210,36 @@ Then run Ink normally via `story.Continue()` until you run out of content or mak
 Take a look at the code for `apps/map-test` in the repo — this is a lightweight Javascript implementation of a 'world map'. Each storylet has a `#loc` tag which specifies which location on the map it's associated with. The locations are set up in `web\main.js`:
 
 ```javascript
-mapManager.addSymbol({left: "40%", top: "25%", id: "town_hall", title: "Town Hall 🏛️"});
-mapManager.addSymbol({left: "77%", top: "37%", id: "library", title: "The Library 📚"});
-mapManager.addSymbol({left: "71.5%", top: "85%", id: "east", title: "East House 🏠"});
-mapManager.addSymbol({left: "22%", top: "62%", id: "bar", title: "Frog & Horses 🍺"});
-mapManager.addSymbol({left: "56%", top: "35%", id: "cave", title: "A Cave 🌊"});
+var mainMap = new Map("main", "../images/town-map.png");
+mainMap.addLocation("town_hall", {left: "40%", top: "25%", title: "Town Hall 🏛️"});
+mainMap.addLocation("library", {left: "77%", top: "37%", title: "The Library 📚"});
+mainMap.addLocation("east", {left: "71.5%", top: "85%", title: "East House 🏠"});
+mainMap.addLocation("bar", {left: "22%", top: "62%", title: "Frog & Horses 🍺"});
+mainMap.addLocation("cave", {left: "56%", top: "35%", title: "A Cave 🌊"});
+
+var caveMap = new Map("cave", "../images/cave-map.png");
+caveMap.addLocation("exit", {left: "40%", top: "95%", title: "Exit 🚪"});
+caveMap.addLocation("well", {left: "68%", top: "59%", title: "The Well 💧"});
+
+var mapManager = new MapManager("#map-container", handleSymbolClick);
+mapManager.addMap(mainMap);
+mapManager.addMap(caveMap);
+
+mapManager.setMap("main");
+```
+
+A simple external function hookup from Ink to JS lets you pick which map is showing from Ink:
+```javascript
++ [Go to cave.]
+    ~ set_map("cave")
+    You go to the cave.
+```
+
+And then deck-level functions can test which map is open (and therefore whether a storylet is valid, or the entire deck of storylets is valid):
+```javascript
+// is the Main deck available?
+=== function _main() ===
+~ return get_map()=="main" // Won't be true if we're in the cave, so everything starting main_ gets ignored
 ```
 
 Otherwise it works exactly as the `plain-test` version does. Hopefully this gives you some idea how you could use storylets for an implementation of explorable story in a world.
