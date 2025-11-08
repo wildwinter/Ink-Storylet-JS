@@ -1,5 +1,5 @@
 import { Storylets } from "../../../engine/storylets.js"
-import { MapSymbolManager } from "./map.js"
+import { MapManager } from "./map.js"
 
 // Set up map first
 // -----------------------
@@ -11,13 +11,12 @@ const handleSymbolClick = (id, title) => {
     chooseStorylet(storylet);
 };
 
-MapSymbolManager.init("#map-container", handleSymbolClick);
-
-MapSymbolManager.addSymbol({left: "40%", top: "25%", id: "town_hall", title: "Town Hall 🏛️", description: "The civic heart of the town. Built in 1898."});
-MapSymbolManager.addSymbol({left: "77%", top: "37%", id: "library", title: "The Library 📚", description: "Historic records and modern media center."});
-MapSymbolManager.addSymbol({left: "71.5%", top: "85%", id: "east", title: "East House 🏠", description: "House belonging to the East family."});
-MapSymbolManager.addSymbol({left: "22%", top: "62%", id: "bar", title: "Frog & Horses 🍺", description: "Local bar and club."});
-MapSymbolManager.addSymbol({left: "56%", top: "35%", id: "cave", title: "A Cave 🌊", description: "Cave which the river disappears into."});
+var mapManager = new MapManager("#map-container", handleSymbolClick);
+mapManager.addSymbol({left: "40%", top: "25%", id: "town_hall", title: "Town Hall 🏛️"});
+mapManager.addSymbol({left: "77%", top: "37%", id: "library", title: "The Library 📚"});
+mapManager.addSymbol({left: "71.5%", top: "85%", id: "east", title: "East House 🏠"});
+mapManager.addSymbol({left: "22%", top: "62%", id: "bar", title: "Frog & Horses 🍺"});
+mapManager.addSymbol({left: "56%", top: "35%", id: "cave", title: "A Cave 🌊"});
 
 // -----------------------
 var storyRoot = document.querySelector('#story');
@@ -51,14 +50,14 @@ function scrollToBottom() {
 
 function onStoryletsUpdated() {
 
-    MapSymbolManager.iterateSymbols(function(symbolElement, locationId) {
+    mapManager.iterateSymbols(function(symbolElement, locationId) {
         // Show or hide symbol based on storylet availability
         const available = storylets.GetFirstAvailableStoryletWithTag("loc", locationId);
         if (available) {
-            MapSymbolManager.setSymbolDesc(locationId, storylets.getStoryletTag(available, "desc", ""));
-            MapSymbolManager.showSymbol(locationId);
+            mapManager.setSymbolDesc(locationId, storylets.getStoryletTag(available, "desc", ""));
+            mapManager.showSymbol(locationId);
         } else {
-            MapSymbolManager.hideSymbol(locationId);
+            mapManager.hideSymbol(locationId);
         }
     });
 
@@ -70,7 +69,7 @@ function onStoryletsUpdated() {
 }
 
 function chooseStorylet(storyletName) {
-    MapSymbolManager.lockMap();
+    mapManager.lockMap();
     storylets.ChooseStorylet(storyletName);
     
     var para = document.createElement('h3');
@@ -99,7 +98,7 @@ function runInk() {
         var hr = document.createElement('hr');
         storyRoot.appendChild(hr);
 
-        MapSymbolManager.unlockMap();
+        mapManager.unlockMap();
 
         updateStorylets();
         return;
@@ -141,7 +140,7 @@ function reset() {
     story.ResetState();
     storylets.Reset();
 
-    MapSymbolManager.unlockMap();
+    mapManager.unlockMap();
 
     removeAllChildren(storyRoot);
 

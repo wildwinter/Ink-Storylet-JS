@@ -1,24 +1,27 @@
 var _mapContainer = null;
 var _mapClickHandler = null;
 
-export const MapSymbolManager = {
+export class Map {
+};
 
-    init: function(containerName, clickHandler) {
+export class MapManager {
+
+    constructor(containerName, clickHandler) {
         _mapContainer = document.querySelector(containerName);
         _mapClickHandler = clickHandler;
-    },
+    }
     
-    _attachClickListener: function(element) {
+    _attachClickListener(element) {
         element.addEventListener('click', (e) => {
             e.stopPropagation();
             const id = element.getAttribute('data-location-id');
             const title = element.getAttribute('data-tooltip-title');
             _mapClickHandler(id, title);
         });
-    },
+    }
 
-    _createSymbolHTML: function(data) {
-        if (!data.id || !data.title || !data.description || !data.left || !data.top) {
+    _createSymbolHTML(data) {
+        if (!data.id || !data.title || !data.left || !data.top) {
             console.error("Missing required data for new symbol.", data);
             return null;
         }
@@ -30,18 +33,18 @@ export const MapSymbolManager = {
                 style="left: ${data.left}; top: ${data.top}; display:none;"
                 data-location-id="${data.id}"  
                 data-tooltip-title="${data.title}"
-                data-tooltip-description="${data.description}"
+                data-tooltip-description=""
             >
                 <div class="map-symbol-visual"></div>
                 <div class="map-tooltip">
                     <div class="tooltip-title" data-title="${data.title}"></div>
-                    <div class="tooltip-description" data-description="${data.description}"></div>
+                    <div class="tooltip-description" data-description=""></div>
                 </div>
             </div>
         `;
-    },
+    }
 
-    addSymbol: function(data) {
+    addSymbol(data) {
         const html = this._createSymbolHTML(data);
         if (!html) return;
 
@@ -54,31 +57,31 @@ export const MapSymbolManager = {
         this._attachClickListener(newArea);
         
         return newArea;
-    },
+    }
     
-    _getSymbolElement: function(id) {
+    _getSymbolElement(id) {
         const element = document.getElementById(`map-${id}`);
         if (!element) {
             console.warn(`Symbol with ID '${id}' not found.`);
         }
         return element;
-    },
+    }
 
-    showSymbol: function(id) {
+    showSymbol(id) {
         const element = this._getSymbolElement(id);
         if (element) {
             element.style.display = 'block'; 
         }
-    },
+    }
 
-    hideSymbol: function(id) {
+    hideSymbol(id) {
         const element = this._getSymbolElement(id);
         if (element) {
             element.style.display = 'none';
         }
-    },
+    }
 
-    setSymbolDesc: function(id, desc) {
+    setSymbolDesc(id, desc) {
         const element = this._getSymbolElement(id);
         if (element) {
             const descriptionElement = element.querySelector('.tooltip-description');
@@ -87,9 +90,9 @@ export const MapSymbolManager = {
                 descriptionElement.setAttribute('data-description', desc);
             }
         }
-    },
+    }
 
-    iterateSymbols: function(callback) {
+    iterateSymbols(callback) {
 
         const allSymbols = _mapContainer.querySelectorAll('.map-hit-area');
 
@@ -100,15 +103,15 @@ export const MapSymbolManager = {
             
             callback(element, id, title, isVisible);
         });
-    },
+    }
 
     // Stop the map being clickable
-    lockMap:function() {
+    lockMap() {
         _mapContainer.classList.add('locked');
-    },
+    }
 
     // Allow the map to be clickable again.
-    unlockMap:function() {
+    unlockMap() {
         _mapContainer.classList.remove('locked');
     }
 };
