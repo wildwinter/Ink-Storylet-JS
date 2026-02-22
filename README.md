@@ -1,3 +1,5 @@
+**Note:** This is now outdated - [Ink-Storylet-Framework](https://github.com/wildwinter/Ink-Storylet-Framework) is a more up-to-date library.
+
 # Ink-Storylet-JS
  Javascript test harness for Ink storylets.
 
